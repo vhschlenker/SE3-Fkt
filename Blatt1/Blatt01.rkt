@@ -26,11 +26,11 @@
 ; Entfernung San Francisco <-> Honolulu
 ; 3847.3km / 2077.4sm
 (define (SanFranciscoHonolulu)
-  (distanzAB 37.75 21.32 122.45 157.83))
+  (distanzAB 37.75 21.32 -122.45 -157.83))
 ; Entfernung Osterinsel <-> Lima
 ; 3760.2km / 2030.3sm
 (define (OsterinselLima)
-  (distanzAB 27.1 12.1 109.4 77.05))
+  (distanzAB -27.1 -12.1 -109.4 -77.05))
 
 ;;2.2
 (define (cdg breiteA laengeA breiteB laengeB)
