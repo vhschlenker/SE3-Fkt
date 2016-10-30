@@ -15,20 +15,10 @@
 ; 2.1 Großkreisentfernung
 ; Eingabe in Grad
 ( define (distanzAB breiteA breiteB laengeA laengeB)
-   (let (
-         [breiteARad (degrees->radians breiteA)]
-         [breiteBRad (degrees->radians breiteB)]
-         [langeDeltaRad (degrees->radians (abs (- laengeA laengeB)))]
-         )
    (* 60
       (radians->degrees
        (my-acos
-        (+
-         (* (sin breiteARad)
-            (sin breiteBRad))
-         (* (cos breiteARad)
-            (cos breiteBRad)
-            (cos langeDeltaRad))))))))
+        (cdg breiteA laengeA breiteB laengeB)))))
 ; Entfernung Oslo <-> Honkong
 ; 8595.2km / 4641sm
 (define (OsloHongkong)
@@ -43,12 +33,18 @@
   (distanzAB 27.1 12.1 109.4 77.05))
 
 ;;2.2
-(define (cdg gba gla gbb glb)
-  (+ (* (sin (degrees->radians gba))
-        (sin (degrees->radians gbb)))
-     (* (cos (degrees->radians gba))
-        (cos (degrees->radians gbb))
-        (cos (degrees->radians (abs (- gla glb)))))))
+(define (cdg breiteA laengeA breiteB laengeB)
+  (let (
+         [breiteARad (degrees->radians breiteA)]
+         [breiteBRad (degrees->radians breiteB)]
+         [langeDeltaRad (degrees->radians (abs (- laengeA laengeB)))]
+         )
+    (+
+     (* (sin breiteARad)
+        (sin breiteBRad))
+     (* (cos breiteARad)
+        (cos breiteBRad)
+        (cos langeDeltaRad)))))
 
 ;Hilfsfunktion, rechnet den Cosinus eines Winkels in Sinus um
 (define (cos->sin x)
