@@ -41,6 +41,21 @@
 ; 3760.2km / 2030.3sm
 (define (OsterinselLima)
   (distanzAB 27.1 12.1 109.4 77.05))
+
+;;2.2
+;Hilfsfunktion, rechnet den Cosinus eines Winkels in Sinus um
+(define (cos->sin x)
+  (sqrt (- 1 (* x x))))
+
+(define (Anfangskurs gba gla gbb glb)
+  (if(< 0 (radians->degrees(my-acos (/ (- (sin (degrees->radians gbb))
+                                          (* (cdg gba gla gbb glb)
+                                             (sin (degrees->radians gba))))
+                                       (* (cos (degrees->radians gba))
+                                          (cos->sin (cdg gba gla gbb glb))))))
+        180)
+     'east 'west))
+  
 ; 2.3 Himmelsrichtungen
 (define (Grad->Himmelsrichtung grad)
   (cond
