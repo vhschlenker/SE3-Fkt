@@ -43,6 +43,13 @@
   (distanzAB 27.1 12.1 109.4 77.05))
 
 ;;2.2
+(define (cdg gba gla gbb glb)
+  (+ (* (sin (degrees->radians gba))
+        (sin (degrees->radians gbb)))
+     (* (cos (degrees->radians gba))
+        (cos (degrees->radians gbb))
+        (cos (degrees->radians (abs (- gla glb)))))))
+
 ;Hilfsfunktion, rechnet den Cosinus eines Winkels in Sinus um
 (define (cos->sin x)
   (sqrt (- 1 (* x x))))
