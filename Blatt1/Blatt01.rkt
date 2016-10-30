@@ -50,14 +50,17 @@
 (define (cos->sin x)
   (sqrt (- 1 (* x x))))
 
-(define (Anfangskurs gba gla gbb glb)
-  (if(< 0 (radians->degrees(my-acos (/ (- (sin (degrees->radians gbb))
+(define (Kurswinkel gba gla gbb glb)
+  (radians->degrees(my-acos (/ (- (sin (degrees->radians gbb))
                                           (* (cdg gba gla gbb glb)
                                              (sin (degrees->radians gba))))
                                        (* (cos (degrees->radians gba))
-                                          (cos->sin (cdg gba gla gbb glb))))))
-        180)
-     'east 'west))
+                                          (cos->sin (cdg gba gla gbb glb)))))))
+
+(define (Anfangskurs gba gla gbb glb)
+  (if (< gla glb)
+    (Kurswinkel gba gla gbb glb)
+    (- 360 (abs (Kurswinkel gba gla gbb glb)))))
   
 ; 2.3 Himmelsrichtungen
 (define (Grad->Himmelsrichtung grad)
