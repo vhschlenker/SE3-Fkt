@@ -58,6 +58,22 @@
 (define (piViertel n)
   (if (= n 1) 1 (+(piViertel (- n 1))(*(/ 1 (- (* 2 n) 1))(expt -1 (- n 1))))))
 
+;;; ---
+;; 2.4 - My attempt with slightly different results
+;Only odd values for precision. Higher value leads to higher precision
+(define(calcPi precision)
+  (if(odd? precision)
+     (* 4 (recPi precision))
+     (* 4 (recPi(- precision 1)))))
+
+(define (recPi x)
+  (if(= x 1) 1
+     (if(= (modulo x 4) 1)
+        (+ (recPi(- x 2)) (/ 1 x))
+        (- (recPi(- x 2)) (/ 1 x)))
+     ))
+;;; ---
+
 ;Aufgabe3
 (define (type-of a)
      (cond [(boolean? a) 'Boolean][(list? a) 'List][(pair? a) 'Pair][(symbol? a) 'Symbol] [(number? a) 'Number] [(char? a) 'Char]
