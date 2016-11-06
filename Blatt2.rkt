@@ -76,17 +76,29 @@
 
 ;Aufgabe3
 (define (type-of a)
-     (cond [(boolean? a) 'Boolean][(list? a) 'List][(pair? a) 'Pair][(symbol? a) 'Symbol] [(number? a) 'Number] [(char? a) 'Char]
-           [(string? a) 'String][(vector? a) 'Vektor][(procedure? a) 'Procedure]))
-;(type-of (* 2 3 4)) = 'Number - Es wird 2*3*4=24 berechnet. 24 ist eine Zahl.
-;(type-of (not 42)) = 'Boolean - not 42 gibt den Wert #f (false) zurück. Der Typ davon ist Boolean.
-;(type-of '(eins zwei drei)) = 'List - (eins zwei drei) ist eine Liste.
-;(type-of '()) = 'List - '() ist die leere Liste. Die leere Liste ist vom Typ Liste.
+     (cond
+       [(boolean? a) 'Boolean]
+       [(list? a) 'List]
+       [(pair? a) 'Pair]
+       [(symbol? a) 'Symbol]
+       [(number? a) 'Number]
+       [(char? a) 'Char]
+       [(string? a) 'String]
+       [(vector? a) 'Vektor]
+       [(procedure? a) 'Procedure]
+       [ else "No correct input"]))
+
 (define (id z) z)
-;(type-of (id sin)) = 'Procedure - id sin ergibt sin. sin ist vom Typ Prozedur.
-;(type-of (string-ref "Harry Potter und der Stein der Weisen" 3)) = 'Char - Das Zeichen an der Stelle 4
+(define (test-type-of)
+  (values
+   (type-of (* 2 3 4)) ;'Number - Es wird 2*3*4=24 berechnet. 24 ist eine Zahl.
+   (type-of (not 42)) ;'Boolean - not 42 gibt den Wert #f (false) zurück. Der Typ davon ist Boolean.
+   (type-of '(eins zwei drei)) ;'List - (eins zwei drei) ist eine Liste.
+   (type-of '()) ;'List - '() ist die leere Liste. Die leere Liste ist vom Typ Liste.
+   (type-of (id sin)) ;'Procedure - id sin ergibt sin. sin ist vom Typ Prozedur.
+   (type-of (string-ref "Harry Potter und der Stein der Weisen" 3)) ;'Char - Das Zeichen an der Stelle 4
       ;wird zurückgegeben. In diesem Fall ist das ein "r". Da r ein Zeichen (Char) ist, ist string-ref 3 vom Typ Char.
-;(type-of (lambda (x) x)) - Die Funktion lambda bildet x x nach x ab und ist vom Typ "Procedure".
-;(type-of type-of) = 'Procedure - type-of ist eine Funktion, also wird 'Procedure zurück gegeben.
-;(type-of(type-of type-of)) = 'Symbol - Zunächst wird wie oben (type-of type-of) zu 'Procedure ausgewertet. 'Procedure  ist aber wiederum ein Symbol.
+   (type-of (lambda (x) x)) ;Die Funktion lambda bildet x x nach x ab und ist vom Typ "Procedure".
+   (type-of type-of) ;'Procedure - type-of ist eine Funktion, also wird 'Procedure zurück gegeben.
+   (type-of (type-of type-of)))) ;'Symbol - Zunächst wird wie oben (type-of type-of) zu 'Procedure ausgewertet. 'Procedure  ist aber wiederum ein Symbol.
       ;Deswegen wird dann (type-of 'Procedure) zu 'Symbol ausgewertet.
