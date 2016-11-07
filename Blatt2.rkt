@@ -45,22 +45,22 @@
 (define (power r n)
   (if (= r 0) 1 (if (even? n) (expt (expt r (/ n 2)) 2) (* (power r (- n 1)) r))))
 
-;2.3 In der ersten Funktion wird der konkrete wird für 2e ausgerechnet. In der zweiten Funktion wird der Wert mit 10^1001 multipliziert,
-;damit die Nachkommastellen gesehen werden können.
-(define (2e n)
-  (if (= n 1) 1 (+ (2e (- n 1)) (/ n (fakultaet(- n 1))))))
-(define (ansicht n)
-  (*(2e n)(expt 10 1001)))
-
-; Veit
 ; 2.3 Die Eulerzahl e
 ; 2,718281828459045
 (define (euler)
-  (exact->inexact (* (/ (+ 1 (sum 1))
-   2) 1)))
+  (exact->inexact (/ (+ 1 (sum 1)) 2)))
 (define (sum n)
   (let [(result (/ (+ n 1) (fakultaet n)))]
   (if (< result (/ 1 (expt 10 1000))) result (+ result (sum (+ n 1))))))
+
+; 2.4 π
+; 3,141592653589793
+(define (pi)
+  (let [(precision 500)]
+    (values
+     (* 4 (exact->inexact (piViertel precision)))
+     (exact->inexact (calcPi precision))
+     )))
 
 ;2.4 Begründugn, warum Pi/4 nicht so schnell approximiert wird: Durch die Fakultät im Nenner
     ;werden kleinere und somit auch genauere Werte berechnet. Die Approximation gelangt also
@@ -83,15 +83,6 @@
         (- (recPi(- x 2)) (/ 1 x)))
      ))
 ;;; ---
-
-; Veit
-; 2.4 π
-; 3,141592653589793
-(define (pi)
-  (* 4 (exact->inexact (piSum 0))))
-(define (piSum n)
-  (let [(result (/ (expt (- 1) n)(+ (* 2 n) 1)))]
-  (if (< (abs result) (/ 1 20000)) result (+ result (piSum (+ n 1))))))
 
 ;Aufgabe3
 (define (type-of a)
