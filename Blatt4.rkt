@@ -97,16 +97,18 @@ WASSEREINBRUCH WIR SINKEN" "KEINE VERLETZTEN \n VIER MANN GEHEN IN DIE RETTUNGSI
 
 ;3.3 
 ( define (new-if condition? then-clause else-clause)
-(cond (condition? then-clause)
-( else else-clause )))
+  (cond 
+    (condition? then-clause)
+    (else else-clause )))
+
 ( define ( faculty product counter max-count )
-( new-if (> counter max-count)
-product
-( faculty ( * counter product)
-(+ counter 1)
-max-count)))
+  ( new-if (> counter max-count)
+    product
+    ( faculty ( * counter product)
+      (+ counter 1)
+      max-count)))
 ; Bei Anwendung der Funktion Fakultät von Alyssa P. Hacker wird nach einigem Warten eine Fehlermeldung ausgegeben, in der steht, dass dem Programm der Speicher
 ; ausgegangen ist. Die Funktion new-if verbraucht also viel zu viel Speicher beim berechnen von 5!. Mit dem gewöhnlichen if konnte 5! aber problemlos ausgerechnet
-; werden. Es ist also deutlich besser, das normale if zu benutzen als new-if. Alyssa hat also keinen Grund, erfreut zu sein und sollte sich mit dem normalen if zufrieden geben.
-; Im Allgemeinen kann es sein, dass eine Spezialform weniger Speicherplatz verbraucht oder auch weniger Zeit verbraucht. Wenn zu viel Raum oder Zeit verbrauht wird, kann dies
-; dazu führen, dass das Programm abbricht und kein Ergebnis liefert. Dies sollte vermieden werden, weil wir ja wollen, dass unsere Programme auch funktionieren.
+; werden. Dies kommt dadurch, dass wegen der Auswertung "von innen" das else immer wieder ausgeführt wird ohne je abgebrochen zu werden.
+; Deswegen läuft das Programm unendlich lange oder bis der Speicher reicht. 
+; Daher muss insbesondere bei der Rekursiven Auswertung die äussere Reduktion verwendet werden.
