@@ -73,11 +73,13 @@
        (define (buchstabierenR rufzeichen) (if (equal? rufzeichen "SSDE") "SIERRA SIERRA DELTA ECHO" "ALFA MIKE ROMEO YANKEE"))
 
 ;2.3
-(display (notmeldungGenerieren "SEASIDE" "SSDE" "UNGEFÄHR 10 SM NORDÖSTLICH LEUCHTTURM KIEL \n NOTFALLZEIT 1000 UTC" "SCHWERER
-WASSEREINBRUCH WIR SINKEN" "KEINE VERLETZTEN \n VIER MANN GEHEN IN DIE RETTUNGSINSEL \n SCHNELLE HILFE ERFORDERLICH "))
+(define (seaside)
+  (display (notmeldungGenerieren "SEASIDE" "SSDE" "UNGEFÄHR 10 SM NORDÖSTLICH LEUCHTTURM KIEL \n NOTFALLZEIT 1000 UTC" "SCHWERER
+  WASSEREINBRUCH WIR SINKEN" "KEINE VERLETZTEN \n VIER MANN GEHEN IN DIE RETTUNGSINSEL \n SCHNELLE HILFE ERFORDERLICH ")))
 
-(display (notmeldungGenerieren "AMIRA" "AMRY" "57°46'N, 006°31'E \n Notfallzeit 0640 UTC" "nach Kenterung in schwerer See, sinkt"
-                               "9 Mann an Bord \n Das Schiff ist 15 m lang \n grüner Rumpf "))
+(define (amry)
+  (display (notmeldungGenerieren "AMIRA" "AMRY" "57°46'N, 006°31'E \n Notfallzeit 0640 UTC" "nach Kenterung in schwerer See, sinkt"
+                               "9 Mann an Bord \n Das Schiff ist 15 m lang \n grüner Rumpf ")))
 
 ;Aufgabe 3:
 ;3.1
