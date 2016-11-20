@@ -8,12 +8,14 @@
 ;2. '(+ (- 11 13) 17) = '(+ (- 11 13) 17) Erklärung: Es wird nichts berechnet, weil ein " ' " vor dem Ausdruck steht. Es hamdelt
  ;sich hierbei um eine Liste mit einem Element.
 
-;3. (cadr '(Alle Jahre wieder)) = 'Jahre Erklärung: Aus der Liste '(Alle Jahre wieder) wird durch cadr das erste Element und das
- ;letzte Element entfernt. Es wird also das zweite Element 'Jahre ausgegeben.
+;3. (cadr '(Alle Jahre wieder)) = 'Jahre Erklärung: Aus der Liste '(Alle Jahre wieder) 
+; wird durch cadr zuerst der Rest der Liste '(Jahre wieder) und davon das
+; erste Element gewählt '(Jahre).
 
 ;4. (cddr '(kommt (das Christuskind))) = '() Erlärung: Es handelt sich um eine Liste mit 2 Elementen. Das erste Element
- ; ist "kommt" und das zweite Element ist eine List mit den Elementen "das" und "Christuskind". Es werden beide Elemente
- ; entfernt, also bleibt nur die leere Liste übrig.
+; ist "kommt" und das zweite Element ist eine List mit den Elementen "das" und "Christuskind".
+; Von dem zweiten Element '((das Christuskind)) wird der Rest der Liste ausgegeben. 
+; Da die Liste nur ein Elemnt hat, wird '() zurück gegeben
 
 ;5. (cons 'Auf '(die Erde nieder)) = '(Auf die Erde nieder) Erklärung: Das Zeichen " 'Auf " und die Liste mit den
  ;3 Elementen "die", "Erde" und "nieder" werden konkateniert. Es ergibt sich eine neue Liste mit den 4 Elementen "Auf",
