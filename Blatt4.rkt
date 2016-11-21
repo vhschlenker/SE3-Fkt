@@ -37,13 +37,16 @@
 
 ;Aufgabe 2:
 ;2.1: <Notruf> ::= <Überschrift> <Standortangabe> <Art des Notfalls> <Notfallzeit> 'UTC' <Erforderte Hilfe> 'ICH SENDE DEN TRÄGER' <Peilzeichen> <Unterschrift> 'Over'
-     ;<ÜBERSCHRIFT> ::=  <Notzeichen> <Notzeichen> <Notzeichen> <Hier ist> <Schiffsname> <Schiffsname> <Schiffsname> <Rufzeichen> <Notzeichen> <Schiffsname> 'Ich buchstabiere' <Buchstabieren> <Buchstabieren>
+     ;<ÜBERSCHRIFT> ::=  <Notzeichen> <Notzeichen> <Notzeichen> <Hier ist> <Schiffsname>
+                        ;<Schiffsname> <Schiffsname> <Rufzeichen> <Notzeichen> <Schiffsname>
+                        ;'Ich buchstabiere' <Buchstabieren> <Buchstabieren>
+                        ;'RUFZEICHEN' <Rufzeichen>
         ;<Notzeichen> ::= MAYDAY
         ;<Hier ist> ::= Hier ist | DELTA ECHO
         ;<Schiffsname> ::= SEASIDE | Amira
         ;<Rufzeichen> ::= ECHO | AMRY
         ;<Buchstabieren> ::= <Buchstabieren><Buchstabiert> | <Buchstabiert>
-        ;<Buchstabiert> ::= ALFA | BRAVO | CHARLIE | DELTA  | ECHO | FOXTROTT | GOLF | HOTEL | INDIA | JULIETT | KILO | LIMA | MIKE
+        ;<Buchstabiert> ::= ALPHA | BRAVO | CHARLIE | DELTA  | ECHO | FOXTROTT | GOLF | HOTEL | INDIA | JULIETT | KILO | LIMA | MIKE
           ;MIKE | NOVEMBER | OSCAR | PAPA | QUEBEC | ROMEO | SIERRA | TANGO  | UNIFORM | VIKTOR | WHISKEY | X-RAY | YANKEE | ZULU
      ;<Standortangabe> ::= NOTFALLPOSITION UNGEFÄHR 10 SM NORDÖSTLICH LEUCHTTURM KIEL | 57°46’N, 006°31’E
      ;<Notfallzeit> ::= 0 | 1 | 2 | ... | 100000 | ...
@@ -54,32 +57,35 @@
      ;<Unterschrift> ::= SEASIDE SIERRA SIERRA DELTA ECHO
 
 ;2.2
-(define (notmeldungGenerieren schiffsname rufzeichen position artDesNotfalls erforderteHilfe)
-  (string-append (ueberschrift schiffsname rufzeichen)"\n" position "\n" artDesNotfalls "\n"
+(define (notmeldungGenerieren schiffsname rufzeichen position notfallzeit artDesNotfalls erforderteHilfe)
+  (string-append (ueberschrift schiffsname rufzeichen)"\n" (Standortangabe position) "\n" (Notfallzeit notfallzeit) "\n" artDesNotfalls "\n"
                  erforderteHilfe "\n" (peilzeichen) "\n" (unterschrift schiffsname rufzeichen) "\n" "OVER \n \n" ))
     (define (ueberschrift schiffsname rufzeichen ) (string-append (notzeichen) "\n" (hierIst) "\n" schiffsname " "
                                                                   schiffsname " " schiffsname " "(buchstabierenR rufzeichen)
-                                                                  "\n" (string-append "MAYDAY " schiffsname " ICH BUCHSTABIERE "
-                                                                                      (buchstabierenS schiffsname))))
+                                                                  "\n" "MAYDAY " schiffsname " ICH BUCHSTABIERE "
+                                                                  (buchstabierenS schiffsname) "\n" "RUFZEICHEN " (buchstabierenR rufzeichen)))
     (define (notzeichen) "MAYDAY MAYDAY MAYDAY")
     (define (hierIst) (car(one-of '("DELTA ECHO" "HIER IST"))))
-      (define (buchstabierenS schiffsname) (if (equal? schiffsname "SEASIDE")(string-append "SIERRA ECHO ALFA SIERRA INDIA DELTA ECHO")
-                                               (string-append "ALFA MIKE INDIA ROMEO ALFA")))
+      (define (buchstabierenS schiffsname) (if (equal? schiffsname "SEASIDE")(string-append "SIERRA ECHO ALPHA SIERRA INDIA DELTA ECHO")
+                                               (string-append "ALPHA MIKE INDIA ROMEO ALPHA")))
+    (define (Standortangabe position) (string-append "NOTFALLPOSITION " position))
+    (define (Notfallzeit notfallzeit) (string-append "NOTFALLZEIT " notfallzeit))
     (define (peilzeichen) "ICH SENDE DEN TRÄGER -- ")
 ;    (define (erforderteHilfe) (if (=(random 6) 0) (string-append (erforderteHilfe))(car(one-of '("KEINE VERLETZTEN" "VIER MANN GEHEN
 ;    IN DIE RETTUNGSINSEL" "SCHNELLE HILFE ERFORDERLICH" "9 Mann an Bord" "Das Schiff ist 15m lang" "grüner Rumpf")))))
-    (define (unterschrift schiffsname rufzeichen) (if (equal? schiffsname "SEASIDE") "SIERRA ECHO ALFA SIERRA INDIA DELTA ECHO"
-                                                      "ALFA MIKE INDIA ROMEO ALFA")(buchstabierenR rufzeichen))
-       (define (buchstabierenR rufzeichen) (if (equal? rufzeichen "SSDE") "SIERRA SIERRA DELTA ECHO" "ALFA MIKE ROMEO YANKEE"))
+    (define (unterschrift schiffsname rufzeichen) (if (equal? schiffsname "SEASIDE") "SIERRA ECHO ALPHA SIERRA INDIA DELTA ECHO"
+                                                      "ALPHA MIKE INDIA ROMEO ALPHA")(buchstabierenR rufzeichen))
+       (define (buchstabierenR rufzeichen) (if (equal? rufzeichen "SSDE") "SIERRA SIERRA DELTA ECHO" "ALPHA MIKE ROMEO YANKEE"))
 
 ;2.3
+; (seaside) für den seaside Notruf ausführen, entsprechend amira.
 (define (seaside)
-  (display (notmeldungGenerieren "SEASIDE" "SSDE" "UNGEFÄHR 10 SM NORDÖSTLICH LEUCHTTURM KIEL \n NOTFALLZEIT 1000 UTC" "SCHWERER
-  WASSEREINBRUCH WIR SINKEN" "KEINE VERLETZTEN \n VIER MANN GEHEN IN DIE RETTUNGSINSEL \n SCHNELLE HILFE ERFORDERLICH ")))
+  (display (notmeldungGenerieren "SEASIDE" "SSDE" "UNGEFÄHR 10 SM NORDÖSTLICH LEUCHTTURM KIEL" "1000 UTC"
+                                 "SCHWERER WASSEREINBRUCH WIR SINKEN" "KEINE VERLETZTEN \nVIER MANN GEHEN IN DIE RETTUNGSINSEL \nSCHNELLE HILFE ERFORDERLICH ")))
 
-(define (amry)
-  (display (notmeldungGenerieren "AMIRA" "AMRY" "57°46'N, 006°31'E \n Notfallzeit 0640 UTC" "nach Kenterung in schwerer See, sinkt"
-                               "9 Mann an Bord \n Das Schiff ist 15 m lang \n grüner Rumpf ")))
+(define (amira)
+  (display (notmeldungGenerieren "AMIRA" "AMRY" "57°46'N, 006°31'E" "0640 UTC" "nach Kenterung in schwerer See, sinkt"
+                               "9 Mann an Bord \nDas Schiff ist 15 m lang \ngrüner Rumpf ")))
 
 ;Aufgabe 3:
 ;3.1
