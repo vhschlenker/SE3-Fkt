@@ -61,21 +61,16 @@
   (string-append (ueberschrift schiffsname rufzeichen)"\n" (Standortangabe position) "\n" (Notfallzeit notfallzeit) "\n" artDesNotfalls "\n"
                  erforderteHilfe "\n" (peilzeichen) "\n" (unterschrift schiffsname rufzeichen) "\n" "OVER \n \n" ))
     (define (ueberschrift schiffsname rufzeichen ) (string-append (notzeichen) "\n" (hierIst) "\n" schiffsname " "
-                                                                  schiffsname " " schiffsname " "(buchstabierenR rufzeichen)
+                                                                  schiffsname " " schiffsname " "(buchstabieren rufzeichen)
                                                                   "\n" "MAYDAY " schiffsname " ICH BUCHSTABIERE "
-                                                                  (buchstabierenS schiffsname) "\n" "RUFZEICHEN " (buchstabierenR rufzeichen)))
+                                                                  (buchstabieren schiffsname) "\n" "RUFZEICHEN " (buchstabieren rufzeichen)))
     (define (notzeichen) "MAYDAY MAYDAY MAYDAY")
     (define (hierIst) (car(one-of '("DELTA ECHO" "HIER IST"))))
-      (define (buchstabierenS schiffsname) (if (equal? schiffsname "SEASIDE")(string-append "SIERRA ECHO ALPHA SIERRA INDIA DELTA ECHO")
-                                               (string-append "ALPHA MIKE INDIA ROMEO ALPHA")))
+    (define (buchstabieren string) (string->schluessel string))
     (define (Standortangabe position) (string-append "NOTFALLPOSITION " position))
     (define (Notfallzeit notfallzeit) (string-append "NOTFALLZEIT " notfallzeit))
     (define (peilzeichen) "ICH SENDE DEN TRÄGER -- ")
-;    (define (erforderteHilfe) (if (=(random 6) 0) (string-append (erforderteHilfe))(car(one-of '("KEINE VERLETZTEN" "VIER MANN GEHEN
-;    IN DIE RETTUNGSINSEL" "SCHNELLE HILFE ERFORDERLICH" "9 Mann an Bord" "Das Schiff ist 15m lang" "grüner Rumpf")))))
-    (define (unterschrift schiffsname rufzeichen) (if (equal? schiffsname "SEASIDE") "SIERRA ECHO ALPHA SIERRA INDIA DELTA ECHO"
-                                                      "ALPHA MIKE INDIA ROMEO ALPHA")(buchstabierenR rufzeichen))
-       (define (buchstabierenR rufzeichen) (if (equal? rufzeichen "SSDE") "SIERRA SIERRA DELTA ECHO" "ALPHA MIKE ROMEO YANKEE"))
+    (define (unterschrift schiffsname rufzeichen) (string-append schiffsname " " (buchstabieren rufzeichen)))
 
 ;2.3
 ; (seaside) für den seaside Notruf ausführen, entsprechend amira.
@@ -120,3 +115,30 @@
 ; werden. Dies kommt dadurch, dass wegen der Auswertung "von innen" das else immer wieder ausgeführt wird ohne je abgebrochen zu werden.
 ; Deswegen läuft das Programm unendlich lange oder bis der Speicher reicht. 
 ; Daher muss insbesondere bei der Rekursiven Auswertung die äussere Reduktion verwendet werden.
+
+; NATO
+(define BuchstabeSchluesselListe '((#\A . "Alfa")(#\B."Bravo")(#\C."Charlie")(#\D."Delta")(#\E."Echo")(#\F."Foxtrott")(#\G."Golf")
+                                                   (#\H."Hotel")(#\I."India")(#\J."Juliett")(#\K."Kilo")(#\L."Lima")(#\M."Mike")
+                                                   (#\N."November")(#\O."Oscar")(#\P."Papa")(#\Q."Quebec")(#\R."Romeo")(#\S."Sierra")
+                                                   (#\T."Tango")(#\U."Uniform")(#\V."Viktor")(#\W."Whiskey")(#\X."X-ray")(#\Y."Yankee")
+                                                   (#\Z."Zulu")(#\0."Nadazero")(#\1."Unaone")(#\2."Bissotwo")(#\3."Terrathree")(#\4."Kartefour")
+                                                   (#\5."Pantafive")(#\6."Soxisix")(#\7."Setteseven")(#\8."Oktoeight")(#\9."Novenine")
+                                                   (#\,."Decimal")(#\.."Stop")))
+; 1.2 Codierungsfunktion
+(define (Buchstabe->Schluessel buchstabe)
+  (cdr (assoc (MakeLettersGreatAgain buchstabe) BuchstabeSchluesselListe)))
+; 1.3 Gross zu klein
+(define (MakeLettersGreatAgain letter)
+  (let ([letterInt (char->integer letter)])
+  (if (and (> letterInt 96) (< letterInt 123))
+      (integer->char(- letterInt 32))
+      letter
+      )))
+; 1.4 String zu Schluessel
+(define (string->schluessel string)
+  (letrec ([innere (lambda (in out)
+                  (if (empty? in)
+                      (list->string out)
+                      (innere (cdr in) (append out (string->list (string-append (Buchstabe->Schluessel (car in)) " "))))))])
+    
+  (innere (string->list string) '())))
