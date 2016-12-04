@@ -5,7 +5,7 @@
 ;Definition der Merkmale
 ;Listen beginnen mit dem dominatesten Merkmal
 (define musterung '(star dots stripes))
-(define fluegelfarbe '(green red blue))
+(define fluegelfarbe '(green red blue yellow))
 (define fuehlerform '(curved curly straight))
 (define fluegelform '(rhomb ellipse hexagon))
 
