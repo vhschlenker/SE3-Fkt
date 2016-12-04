@@ -110,3 +110,43 @@
   (if (equal? (random 2) 0)
       (car merkmalListe)
       (cdr merkmalListe)))
+
+; Aufgabe 2
+(define (Antonia) '(stripes blue curved hexagon))
+(define (Anton) '(star green curly rhomb))
+(define (Toni) '(star red curly rhomb))
+(define (Tini) '(dots green straight rhomb))
+(define (Tina) '(stripes yellow curly ellipse))
+
+; Ein "Gentest" um zu überprüfen ob zwei Eltern ein solches Kind kriegen können
+; Input: Elternteil1 Elternteil2 Kind jeweils als Lioste von Merkmalen
+; (Reihenfolge wie in "Definition der Merkmale" oben
+; Output: #t, also ja oder #f für nein
+(define (gentest Elternteil1 Elternteil2 Kind)
+    (and
+     (E1oderE2? (car Elternteil1) (car Elternteil2) (car Kind) musterung)
+     (E1oderE2? (cadr Elternteil1) (cadr Elternteil2) (cadr Kind) fluegelfarbe)
+     (E1oderE2? (caddr Elternteil1) (caddr Elternteil2) (caddr Kind) fuehlerform)
+     (E1oderE2? (cadddr Elternteil1) (cadddr Elternteil2) (cadddr Kind) fluegelform)))
+; Prüft ob das Merkmal vom einen oder anderen ELternteil möglich sind
+; Input: Die Merkmale der Elternteil E1 und E2, das des Kindes und die jewilige Liste
+; Output: #t, also ja oder #f für nein
+(define (E1oderE2? E1 E2 K merkmalListe)
+  (or (Emoeglich? E1 K merkmalListe) (Emoeglich? E2 K merkmalListe)))
+; Prüft ob das Merkmal in der Liste der rezessiven Merkmale des Eleternteiles vorkommt
+; Input: Das Merkmal des Elternteiles, das Merkmale des Kindes, Die Liste mit den Merkmalen
+; Output: #t, also ja oder #f für nein
+(define (Emoeglich? E K merkmalListe)
+  (contains? K (returnRecList E merkmalListe)))
+; Da es keine direkte conatins Methode gibt,
+; und ein Funktion mit "member" fast genauso aufwendig ist, machen wir es doch mal rekursiv.
+; Prüft also, ob ein Element in einer Liste vorhanden ist.
+; Input: Element, Liste
+; Output: #t, also ja oder #f für nein
+(define (contains? element list)
+  (cond
+    [(empty? list) #f]
+    [(equal? element (car list)) #t]
+    [else (contains? element (cdr list))]))
+; Prüft mittels Gentest ob die Ergebnisse vom Kindergenerator richtig sind
+; Output: #t, also ja oder #f für nein
