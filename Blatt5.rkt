@@ -83,6 +83,7 @@
 ; Gibt die rezessiveren Merkmale zu einem Merkmal zurück
 ; Input: Das Merkmal, Die Liste der Merkmale
 ; Output: Eine liste mit den rezessiven Merkmalen
+; Bemerkung: Merkmale sind zu sich selber rezessiv
 (define (returnRecList merkmal merkmalListe)
   (if (equal? merkmal (car merkmalListe))
       merkmalListe
