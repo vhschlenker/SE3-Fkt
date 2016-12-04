@@ -72,6 +72,25 @@
    (cons (cadddr merkmalListe) (returnRndListElement(returnRecList (cadddr merkmalListe) fluegelform)))
    ))
 
+; Um beliebige Werte zu testen.
+; Input: Die Anzahl der Kinder
+; Output: Stellt Eltern + Kinder dar
+(define (test1 number)
+  (let (
+      [E1 (genSchmetterling)]
+      [E2 (genSchmetterling)])
+    (display "Elternteil 1 -- Elternteil 2\n")
+    (display(show E1))
+    (display (show E2))
+    (display "\nKinder\n")
+    (mendeln E1 E2 number)))
+; Generiert einen zufälligen Schmetterling
+; Output: Eine Liste mit zufälligen Merkmalen
+(define (genSchmetterling)
+  (list (returnRndListElement musterung)
+          (returnRndListElement fluegelfarbe)
+          (returnRndListElement fuehlerform)
+          (returnRndListElement fluegelform)))
 ; Zeigt ein Schmetterling mit einer Liste von Merkmalen
 ; Input: Eine Liste von Merkmalen
 ; Output: zeigt den Schmetterling mit den Merkmalen
@@ -150,3 +169,14 @@
     [else (contains? element (cdr list))]))
 ; Prüft mittels Gentest ob die Ergebnisse vom Kindergenerator richtig sind
 ; Output: #t, also ja oder #f für nein
+(define (test2)
+  (let* (
+      [E1 (genSchmetterling)]
+      [E2 (genSchmetterling)]
+      [K (childGen (pairWithRec E1) (pairWithRec E2))])
+    (display "Elternteil 1 -- Elternteil 2\n")
+    (display(show E1))
+    (display (show E2))
+    (display "\nKinder\n")
+    (display (show K))
+    (display "\nMöglich? ") (gentest E1 E2 K)))
