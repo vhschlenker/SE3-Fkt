@@ -3,7 +3,7 @@
 ;(show-butterfly 'red 'stripes 'curved 'rhomb)
 
 ;Definition der Merkmale
-;Listen beginnen mit dem dominatesten Merkmal
+;Listen beginnen mit dem dominantesten Merkmal
 (define musterung '(star dots stripes))
 (define fluegelfarbe '(green red blue yellow))
 (define fuehlerform '(curved curly straight))
@@ -75,7 +75,7 @@
 ; Zeigt ein Schmetterling mit einer Liste von Merkmalen
 ; Input: Eine Liste von Merkmalen
 ; Output: zeigt den Schmetterling mit den Merkmalen
-; Bemerkung: Bei der Aufzhäling der Merkmale beim Aufgabenblatt und hier
+; Bemerkung: Bei der Aufzählung der Merkmale beim Aufgabenblatt und hier
 ; wird die Reihenfolge musterung-fluegelfarbe-fuehlerform-fluegelform verwendet.
 ; show-butterfly erwartet aber fluegelfarbe-musterung-fuehlerform-fluegelform
 (define (show merkmale)
