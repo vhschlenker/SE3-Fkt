@@ -63,7 +63,7 @@
 
 (define (lineOfSnow imageWidth singleCircleWidth [ypos 0])
   (if (< ypos imageWidth)
-      (overlay/offset (makeSnowball singleCircleWidth) singleCircleWidth 0 (lineOfSnow imageWidth singleCircleWidth (+ ypos singleCircleWidth)))
+      (overlay/xy (makeSnowball singleCircleWidth) singleCircleWidth 0 (lineOfSnow imageWidth singleCircleWidth (+ ypos singleCircleWidth)))
       (makeSnowball singleCircleWidth)))
 
 (define snowColors '(Snow FloralWhite Ivory Honeydew MintCream LightCyan AliceBlue Azure GhostWhite White WhiteSmoke))
