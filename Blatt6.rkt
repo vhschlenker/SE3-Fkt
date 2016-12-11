@@ -59,8 +59,7 @@
 ))
 
 (define (create-Weihnacht)
-  (display(underlay/xy (underlay/xy (rectangle 1000 800 "solid" "darkblue") 200 0 (erzeugeBaeumeL 15)) 200 0 (erzeugeBaeumeR 15)) )) 
-(create-Weihnacht)
+  (underlay/xy (underlay/xy (rectangle 1000 800 "solid" "darkblue") 200 0 (erzeugeBaeumeL 15)) 200 0 (erzeugeBaeumeR 15)) )
 
 (define (lineOfSnow imageWidth singleCircleWidth [ypos 0])
   (if (< ypos imageWidth)
