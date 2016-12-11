@@ -56,7 +56,7 @@
          [height (image-width scene)]
          [y (random 1 width)]
          [x (random 1 height)]
-         [seg (random 3 7)]
+         [seg (random 3 12)]
          [widthEight (/ width 8)])
     (place-image (pine widthEight seg) y x scene)))
 
@@ -64,8 +64,8 @@
 ; und der Segmentanzahl segments
 (define (pine width segments [segment 1])
   (if (> segment segments)
-      (crop/align "center" "center" 140 width(rectangle (/ width 8) 50 "solid" "brown"))
-      (overlay/xy (crop/align "center" "center" 140 width(isosceles-triangle (* width (/ segment 10)) 90 "solid" (returnRandomElementFromList pineColors))) 0 (* width (/ segment 25)) (pine width segments (+ segment 1)))))
+      (crop/align "center" "center" 200 width(rectangle (/ width 8) 50 "solid" "brown"))
+      (overlay/xy (crop/align "center" "center" 200 width(isosceles-triangle (* width (/ segment 10)) 90 "solid" (returnRandomElementFromList pineColors))) 0 (* width (/ segment 25)) (pine width segments (+ segment 1)))))
 
 ; Erzeugt ein Bild der Grösse width und heigth
 ; Und der "Schneeballgrösse" snowsize
