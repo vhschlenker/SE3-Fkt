@@ -31,45 +31,62 @@
 ;Es gilt also nicht linear, Baumrekursion, geschachtelt, nicht direkt und indrekt.
 
 ;Aufgabe 2:
-(define baum1 (above/align
-"center"
-(star 20 "solid" "gold")
-(ellipse 20 10 "solid" "green")
-(ellipse 40 25 "solid" "darkgreen")
-(ellipse 65 30 "solid" "olivedrab")
-(ellipse 90 40 "solid" "darkgreen")
-(rectangle 20 30 "solid" "brown")
-)) 
-(define kerze (above/align
-"center"
-(ellipse 10 20 "solid" "orange")
-(rectangle 2 10 "solid" "black")
-(triangle 30 "solid" "red")
-(rectangle 30 100 "solid" "red")))
+;Erstellt das Bild
+; width ist für die Breite
+; heigth ist für die Höhe
+; pines ist die Anzahl der tannen
+; snowsize ist die grösse der "Schneekugeln"
+(define (makeItSnow)
+  (let ([width 1000]
+        [height 800]
+        [pines 12]
+        [snowsize 30])
+        (overlay-it pines (fillWithSnow width height snowsize))))
 
+;Legt n-mal eine Tanne auf die scene
+(define (overlay-it n scene [i 0])
+  (if (> n i)
+      (overlay-it n (drawPineOnScene scene) (+ 1 i))
+      scene))
+      
+; Setzt zufällig eine Tanne auf die Szene
+(define (drawPineOnScene scene)
+  (let* (
+         [width (image-width scene)]
+         [height (image-width scene)]
+         [y (random 1 width)]
+         [x (random 1 height)]
+         [seg (random 3 7)]
+         [widthEight (/ width 8)])
+    (place-image (pine widthEight seg) y x scene)))
 
-;(define anzahl 10)
-(define (erzeugeBaeumeR anzahl) 
- (if (= anzahl 0) (underlay/xy (rectangle 600 600 0 "darkblue") 350 200 kerze)
-(underlay/xy (erzeugeBaeumeR (- anzahl 1)) (+ 500(* anzahl 10)) (+ 200(* anzahl 10)) baum1)
-))
-(define (erzeugeBaeumeL anzahl) 
- (if (= anzahl 0) (underlay/xy (rectangle 600 600 0 "darkblue") 250 200 kerze)
-(underlay/xy (erzeugeBaeumeL (- anzahl 1)) (- 100(* anzahl 10)) (+ 200(* anzahl 10)) baum1)
-))
+; Erzeugt eine Tanne mit der Breite width
+; und der Segmentanzahl segments
+(define (pine width segments [segment 1])
+  (if (> segment segments)
+      (crop/align "center" "center" 140 width(rectangle (/ width 8) 50 "solid" "brown"))
+      (overlay/xy (crop/align "center" "center" 140 width(isosceles-triangle (* width (/ segment 10)) 90 "solid" (returnRandomElementFromList pineColors))) 0 (* width (/ segment 25)) (pine width segments (+ segment 1)))))
 
-(define (create-Weihnacht)
-  (underlay/xy (underlay/xy (rectangle 1000 800 "solid" "darkblue") 200 0 (erzeugeBaeumeL 15)) 200 0 (erzeugeBaeumeR 15)) )
+; Erzeugt ein Bild der Grösse width und heigth
+; Und der "Schneeballgrösse" snowsize
+(define (fillWithSnow width height snowsize [ypos 0])
+  (if (< ypos height)
+      (underlay/xy (lineOfSnow width snowsize) 0 (/ snowsize 2) (fillWithSnow width height snowsize (+ ypos (/ snowsize 2))))
+      (lineOfSnow width snowsize)))
 
-(define (lineOfSnow imageWidth singleCircleWidth [ypos 0])
-  (if (< ypos imageWidth)
-      (overlay/xy (makeSnowball singleCircleWidth) singleCircleWidth 0 (lineOfSnow imageWidth singleCircleWidth (+ ypos singleCircleWidth)))
-      (makeSnowball singleCircleWidth)))
+; Erzeugt eine einzelne Reihe von Schnee der breite imageWidth und der "Schneeballgrösse" snowsize
+(define (lineOfSnow imageWidth snowsize [ypos 0])
+  (if (< (+ ypos snowsize) imageWidth)
+      (overlay/xy (makeSnowball snowsize) snowsize 0 (lineOfSnow imageWidth snowsize (+ ypos snowsize)))
+      (makeSnowball snowsize)))
+
+; Erzeugt einen einzelnen Schneeball" mit der Schneegrösse snowsize
+(define (makeSnowball snowsize)
+  (crop 0 0 (* 2 snowsize) snowsize (circle snowsize "solid" (returnRandomElementFromList snowColors))))
 
 (define snowColors '(Snow FloralWhite Ivory Honeydew MintCream LightCyan AliceBlue Azure GhostWhite White WhiteSmoke))
+(define pineColors '(YellowGreen OliveDrab MediumForestGreen DarkGreen ForestGreen SeaGreen))
 (define (returnRandomElementFromList list)
    (if (empty? list)
       '()
       (car (shuffle list))))
-(define (makeSnowball width)
-  (crop 0 0 (* 2 width) width (circle width "solid" (returnRandomElementFromList snowColors))))
