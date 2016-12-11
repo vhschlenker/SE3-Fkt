@@ -61,3 +61,16 @@
 (define (create-Weihnacht)
   (display(underlay/xy (underlay/xy (rectangle 1000 800 "solid" "darkblue") 200 0 (erzeugeBaeumeL 15)) 200 0 (erzeugeBaeumeR 15)) )) 
 (create-Weihnacht)
+
+(define (lineOfSnow imageWidth singleCircleWidth [ypos 0])
+  (if (< ypos imageWidth)
+      (overlay/offset (makeSnowball singleCircleWidth) singleCircleWidth 0 (lineOfSnow imageWidth singleCircleWidth (+ ypos singleCircleWidth)))
+      (makeSnowball singleCircleWidth)))
+
+(define snowColors '(Snow FloralWhite Ivory Honeydew MintCream LightCyan AliceBlue Azure GhostWhite White WhiteSmoke))
+(define (returnRandomElementFromList list)
+   (if (empty? list)
+      '()
+      (car (shuffle list))))
+(define (makeSnowball width)
+  (crop 0 0 (* 2 width) width (circle width "solid" (returnRandomElementFromList snowColors))))
