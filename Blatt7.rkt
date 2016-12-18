@@ -68,6 +68,19 @@
                0 10(rectangle 10 80 "solid"(getFarbe2 zahl)))90 10(rectangle 10 80 "solid" (getFarbe3 zahl)))10 90(rectangle 80 10 "solid" (getFarbe4 zahl)))
               0 100 (rectangle 10 80 "solid" (getFarbe5 zahl)))90 100 (rectangle 10 80 "solid" (getFarbe6 zahl)))10 180 (rectangle 80 10 "solid" (getFarbe7 zahl))))
 
+;;2.3
+(define (einzelanzeige t)
+  (segmentdarstellung (scale9 t)))
 
+;;maps any integer on {0-9}.
+;scales down until range is 0 - 279 (28 * 10 - 1), then divides by 28 and floors.
+(define (scale9 x)
+  (letrec ([innere (lambda (x)
+                     (if (< x 280) x (innere (- x 280))))])
+    (if (= x 0) 0 (floor (/ (innere x) 28)))))
+                
+
+(define (siebensegment)
+  (animate einzelanzeige))
 
 
