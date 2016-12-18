@@ -72,7 +72,7 @@
 (define (einzelanzeige t)
   (segmentdarstellung (scale9 t)))
 
-;;maps any integer on {0-9}.
+;;maps any number on {0-9}.
 ;scales down until range is 0 - 279 (28 * 10 - 1), then divides by 28 and floors.
 (define (scale9 x)
   (letrec ([innere (lambda (x)
