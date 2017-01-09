@@ -1,6 +1,7 @@
 #lang racket
 (require se3-bib/setkarten-module)
 (require se3-bib/tools-module)
+(require 2htdp/image)
 ;Aufgabe 1:
 ;;1. Eine Funktion ist eine Funktion höherer Ordnung, wenn sie eine oder mehrere Funktion als Argument
 ;;hat oder wenn sie als Ergebnis eine Funktion zurück gibt.
@@ -49,76 +50,97 @@
 ;;2.1:
 (define (absolutbetrag xs)
   (map abs xs))
-;;;Test:
-(absolutbetrag testlist1)
 ;;2.2:
-(define (durch13teilbar xs)
-  (map (curry * 13) (filter integer? (map (curryr / 13) xs))))
-;;;Test:
-(durch13teilbar testlist2)
+(define (durch13teilbar list)
+  (filter (lambda (x) (integer? (/ x 13))) list))
 ;;2.3:
 (define (summeGeradeGrößer3 xs)
   (foldl + 0 (filter even? (filter (curryr > 3) xs))))
-;;;Test:
-(summeGeradeGrößer3 testlist2)
+;;2.4
+(define (4splitOnFunc list func)
+  (let ([returnListOfLists (splitListBasedOnFunction list func)])
+  (values (reverse (car returnListOfLists))(reverse (car (cdr returnListOfLists))))))
 
-;Aufgabe 3:
-;;3.1:
-;;;Repräsentation der vier Eigenschaften eienr Karte (Form, Farbe, Anzahl, Füllung)
-(define Form '(waves oval rectangle))
-(define Farbe '(red green blue))
-(define Anzahl '(1 2 3))
-(define Füllung '(outline solid hatched))
+(define (splitListBasedOnFunction list func)
+  (foldl
+   (lambda (currEle prevResult)
+     (addElementToListAndReturnAsPairBasedOnFunc func currEle (car prevResult) (car (cdr prevResult)))) '(()()) list))
 
-;;;Repräsentation einer Karte, die eine Anzahl, eine Form, eine Füllung und eine Garbe hat.
-(define Karte '(Anzahl Form Füllung Farbe))
+(define (addElementToListAndReturnAsPairBasedOnFunc func element list1 list2)
+  (if (func element)
+      (list (cons element list1) list2)
+      (list list1 (cons element list2))))
 
-;;3.2 Erzeugen einer Liste aller Karten:
-(define ListeAllerSpielkarten
-  '((3 rectangle hatched blue) (3 rectangle solid blue) (3 rectangle outline blue) (2 rectangle hatched blue) (2 rectangle solid blue) (2 rectangle outline blue)
-    (1 rectangle hatched blue) (1 rectangle solid blue) (1 rectangle outline blue) (3 rectangle hatched green) (3 rectangle solid green) (3 rectangle outline green)
-    (2 rectangle hatched green) (2 rectangle solid green) (2 rectangle outline green) (1 rectangle hatched green) (1 rectangle solid green)(1 rectangle hatched green)
-    (3 rectangle hatched red) (3 rectangle solid red) (3 rectangle outline red) (2 rectangle hatched red) (2 rectangle solid red) (2 rectangle outline red)
-    (1 rectangle hatched red) (1 rectangle solid red) (1 rectangle outline red) (3 oval hatched blue)(3 oval solid blue)(3 oval outline blue)
-    (2 oval hatched blue) (2 oval solid blue) (2 oval solid blue) (1 oval hatched blue) (1 oval solid blue)(1 oval outline blue)
-    (3 oval hatched green) (3 oval solid green) (3 oval outline green) (2 oval hatched green) (2 oval solid green)(2 oval outline green)
-    (1 oval hatched green) (1 oval solid green) (1 oval outline green) (3 oval hatched red) (3 oval solid red)(3 oval outline red)
-    (2 oval hatched red) (2 oval solid red) (2 oval outline red) (1 oval hatched red) (1 oval solid red)(1 oval outline red)
-    (3 waves hatched blue) (3 waves solid blue) (3 waves outline blue)(2 waves hatched blue) (3 waves solid blue)(2 waves outline blue)
-    (1 waves hatched blue) (1 waves solid blue) (1 waves outline blue) (3 waves hatched green) (3 waves solid green)(3 waves outline green)
-    (2 waves hatched green) (2 waves solid green) (2 waves outline green) (1 waves hatched green) (1 waves solid green)(1 waves outline green)
-    (3 waves hatched red) (3 waves solid red) (3 waves outline red) (2 waves hatched red) (2 waves solid red) (2 waves outline red)
-    (1 waves hatched red) (1 waves solid red) (1 waves outline red)))
+(define (testAll)
+  (values
+   (absolutbetrag testlist1)
+   (durch13teilbar testlist2)
+   (summeGeradeGrößer3 testlist2)))
+; Da wir hier values zurückgeben sollen, wird die test Funktion extra ausgeführt.
+(define (test4)
+  (4splitOnFunc testlist1 even?))
 
-(define (show-set-card-list xs)
-  (show-set-card
-   (car xs)
-   (cadr xs)
-   (caddr xs)
-   (cadddr xs)))
-(define (grafischeDarstellung xs)
-  (map (curry show-set-card-list)
-                      xs))
+; Aufgabe 3
+; Teilaufgabe 1
+(define number '(1 2 3))
+(define pattern '(waves oval rectangle))
+(define mode '(outline solid hatched))
+(define color '(red green blue))
+; Eine Karte stellen wir simpler weise als liste mit der Reihenfolge
+; anzahl pattern, mode, color
+(define (randomCard) (list (returnRndListElement number) (returnRndListElement pattern) (returnRndListElement mode) (returnRndListElement color)))
 
-;;3.3 Funktion für is-a-set?
-;;;Wir erwaten als Eingabe eine Liste mit mindestens 3 Elementen. Zu Beginn eines Spiels wird die ListeAllerSpielkarten benutzt.
-(define (3ZufaelligeKarten xs)
-  (let ([r1 (random 1 83)])
-    (let ([r2 (random 1 83)])
-      (let ([r3 (random 1 83)])
-        (if (and (not (equal? r1 r2))(not (equal? r2 r3))(not (equal? r1 r3)))
-            (list (list-ref xs (- r1 1))(list-ref xs (- r2 1))(list-ref xs (- r3 1)))
-            (list (list-ref xs 0)(list-ref xs 1)(list-ref xs 2)))))))
+;Teilaufgabe 2
+; Erzeugt alle Karten
+(define (generateAllCards) (cartesian-product number pattern mode color))
 
-;;;Wir erwarten als Eingabe eine Liste mit 3 Elementen.
-(define (is-a-set? xs)
-  (if (and (or (and (equal? (car (car xs))(car (cadr xs)))(equal? (car (cadr xs))(car (caddr xs))))
-               (not (or (equal? (car (car xs))(car (cadr xs)))(equal? (car (car xs)) (car (caddr xs)))(equal? (car (cadr xs))(car (caddr xs))))))
-           (or (and (equal? (cadr (car xs))(cadr (cadr xs)))(equal? (cadr (caddr xs))(cadr (cadr xs))))
-               (not (or (equal? (cadr (car xs))(cadr (cadr xs)))(equal? (cadr (car xs)) (cadr (caddr xs)))(equal? (cadr (cadr xs))(cadr (caddr xs))))))
-           (or (and (equal? (caddr (car xs))(caddr (cadr xs)))(equal? (caddr (caddr xs))(caddr (cadr xs))))
-               (not (or (equal? (caddr (car xs))(caddr (cadr xs)))(equal? (caddr (car xs)) (caddr (caddr xs)))(equal? (caddr (cadr xs))(caddr (caddr xs))))))
-           (or (and (equal? (cadddr (car xs))(cadddr (cadr xs)))(equal? (cadddr (caddr xs))(cadddr (cadr xs))))
-               (not (or (equal? (cadddr (car xs))(cadddr (cadr xs)))(equal? (cadddr (car xs)) (cadddr (caddr xs)))(equal? (cadddr (cadr xs))(cadddr (caddr xs)))))))
-      #t
-      #f))
+; Erzeugt alle Karten und Zeigt sie
+; Entweder übereinander (above) oder nebeneinander (beside)
+(define (generateAndShowAllCardsBeside) (showCards (generateAllCards) beside))
+(define (generateAndShowAllCardsAbove) (showCards (generateAllCards) above))
+
+; Zeigt die Karten der Liste nebeneinander
+(define (showCards list func)
+    (if (empty? list)
+      empty-image
+      (func (showCard (car list)) (showCards (cdr list) func))))
+(define (showCard cardAsList)
+  (show-set-card (first cardAsList) (second cardAsList) (third cardAsList) (fourth cardAsList)))
+; Gibt von einer Liste ein zufälliges Element aus
+; Input: Die Liste der Elemente
+; Output: Ein zufälliges Element
+(define (returnRndListElement merkmalListe)
+  (if (empty? merkmalListe)
+      '()
+      (car (shuffle merkmalListe))))
+
+; Teilaufgabe 3
+; Überprüft, ob ein die Eingabewerte ein Set sind
+(define (is-a-set? listOfCards)
+  (let ([card1 (car listOfCards)]
+        [card2 (car (cdr listOfCards))]
+        [card3 (car (cddr listOfCards))])
+    (foldl (lambda (ele1 ele2 ele3 prevBool)(and (all-elements-equal-or-different? ele1 ele2 ele3) prevBool)) #t card1 card2 card3)))
+
+(define (testIsASet?)
+  (values
+   (is-a-set? '((2 red oval hatched )(2 red rectangle hatched)(2 red wave hatched)))
+   (is-a-set? '((2 red rectangle outline)(2 green rectangle outline )(1 green rectangle solid)))))
+(define (testIsASetRandom?)
+  (let* ([card1 (randomCard)]
+        [card2 (randomCard)]
+        [card3 (randomCard)]
+        [listOfTheCards (list card1 card2 card3)])
+    (values
+    (showCards listOfTheCards beside)
+    (is-a-set? listOfTheCards))))
+    
+
+; Wenn alle Elemente gleich sind (d.h. alle equals true) dann #t
+; Wenn alle Elemente ungleich sind (d.h. alle equals false) dann #t
+; Sonst #f
+; and ist nur dann #t, wenn alle equals #t sind
+; nor ist nur dann #t, wenn alle equals #f sind
+; Daher würde statt xor auch or reichen, da nie beide Bedienungen #t sein können
+(define (all-elements-equal-or-different? ele1 ele2 ele3)
+  (xor (and (equal? ele1 ele2) (equal? ele2 ele3) (equal? ele1 ele3)) (nor (equal? ele1 ele2) (equal? ele2 ele3) (equal? ele1 ele3))))
