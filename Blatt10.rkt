@@ -16,13 +16,14 @@
   (+ (* 9 y)x))
 
 ;;;1.1.2. Zugriff auf Indizes, Spalte, Quadrant
-(define (zeile->indizes y)
-  (list (xy->index 0 y)(xy->index 1 y)(xy->index 2 y)(xy->index 3 y)(xy->index 4 y)
-        (xy->index 5 y)(xy->index 6 y)(xy->index 7 y)(xy->index 8 y)))
-(define (spalte->indizes x)
-  (list (xy->index x 0)(xy->index x 1)(xy->index x 2)(xy->index x 3)(xy->index x 4)
-        (xy->index x 5)(xy->index x 6)(xy->index x 7)(xy->index x 8)))
-(define qs (list (list 0 0)(list 1 3)(list 2 6)(list 3 27)(list 4 30)(list 5 33)(list 6 54)(list 7 57)(list 8 60)))
+(define (buildListTo n)
+  (build-list n values))
+(define (zeile->indizes zeile)
+  (map (lambda (index) (xy->index index zeile)) (buildListTo 9)))
+(define (spalte->indizes spalte)
+  (map (lambda (index) (xy->index spalte index)) (buildListTo 9)))
+
+(define qs '((0 0)(1 3)(2 6)(3 27)(4 30)(5 33)(6 54)(7 57)(8 60)))
 (define (quadrant->indizes q)
   (let ([s (cadr(assoc q qs))])
   (list s (+ 1 s)(+ 2 s)(+ 9 s)(+ 10 s)(+ 11 s)(+ 18 s)(+ 19 s)(+ 20 s))))
@@ -49,10 +50,10 @@
 (define (ungleichAlleQuadranten?)
   (empty? (remove* '(#t) (map ungleichQuadrant? '(0 1 2 3 4 5 6 7 8)))))
 (define (spiel-konsistent? spiel)
-  (if (and (ungleichAlleSpalten?)(ungleichAlleZeilen?)(ungleichAlleQuadranten?))#t #f))
+  (and (ungleichAlleSpalten?)(ungleichAlleZeilen?)(ungleichAlleQuadranten?)))
 
-(define (geloest? spiel)
-  (if (equal? (vector->list spiel)(remove* '(0) (vector->list spiel)))#t #f))
+(define (spiel-geloest? spiel)
+  (equal? (vector->list spiel)(remove* '(0) (vector->list spiel))))
 
 
 ;;1.2
@@ -77,14 +78,117 @@
 (define (markiere-ausschluss spiel zahl)
   (display(let ([c (vector-copy spiel)])(if(kannNichtGesetztWerden? 0 zahl)(vector-set! c 0 zahl) #\X))))
     
+; Aufgabe 2
+; Teilaufgabe 1
+(define (teilaufgabe1)
+  (values
+   ; (- 2 3) -> -1 (min 2 -1) -> -1 (max -1) -> -1
+   (max (min 2 (- 2 3)))
+   ; Durch die weak clause wird die Auswertung abgebrochen
+   ; Daher '(+ -2 2)
+   `(+ ,(- 2 4) 2)
+   ; 'Alle
+   (car '( Alle meine Entchen))
+   ; '((dem See))
+   (cdr '( (schwimmen auf) (dem See)))
+   ; '((Listen) sind einfach )
+   (cons '(Listen ) '( sind einfach ))
+   ; '( Paare . auch)
+   (cons 'Paare 'auch)
+   ; #t
+   (equal?
+    (list 'Java 'Racket 'Prolog )
+    '(Java Racket Prolog))
+   ; #f
+    (eq?
+     (list 'Java 'Racket 'Prolog )
+     (cons 'Racket '(Prolog Java )))
+    ; '(3 6 9)
+    (map
+     (lambda ( x ) (+ x x x ))
+     '( 1 2 3 ))
+    ; '( 2 4)
+    (filter even? '(1 2 3 4 5))
+    ; 2
+    ((curry min 7) 2)
+    ; #t
+    ((curry = 2) 2)
+    ))
+; Teilaufgabe 2
+(define ∗a∗ 10 )
+(define ∗b∗ '∗a∗ )
+(define ( merke x) (lambda () x ))
+; Eine schliessende Klammer zu wenig, wurde hinzugefügt
+(define (test x )
+  (let ((x (+ x ∗a∗)))
+    (+ x 2)))
+(define (teilaufgabe2)
+  (values
+   ; 10
+   ∗a∗
+   ; Addition mit Symbol, d.h contract violation
+   ;(+ ∗a∗ ∗b∗)
+   ; 20
+   (+ (eval ∗a∗) (eval ∗b∗))
+   ; #f da (and #f #f)
+   (and (> ∗a∗ 10) (> ∗b∗ 3))
+   ; Durch null teilen?
+   ; Und Racket dann so: nö.
+   ;(or (> ∗a∗ 10) (/ ∗a∗ 0))
+   ; Wir kriegen bei (merke 3) das procedure (3) zurück
+   ; Daher keine addition
+   (+ 2 (merke 3))
+   ; Durch die Klammer um das procedure was return wird,
+   ; wird es ausgeführt. D.h 5
+   (+ 2 ((merke 3)))
+   ; Nochmals, fehlende Klammer bei (test)
+   ; Wegen Überschattung 16
+   ( test 4)
+   ))
+; Teilaufgabe 3
+(define (3a)
+  (* 3 (+ 4 5) 6))
+(define (3b x)
+  (sqrt (- 1 (expt (sin x) 2))))
+; Teilaufgabe 4
+(define (c a b)
+  (sqrt (+ (expt a 2) (expt b 2))))
+(define (mytan alpha)
+  (if (and (< (- (/ pi 2)) alpha) (< alpha (/ pi 2)))
+    (/ (sin alpha) (3b alpha))
+    'error
+))
+; Teilaufgabe 5
+(define (5a)
+  (- (+ 1 (/ 4 2)) 1))
+(define (5b)
+  (/ (- 2 (/ (+ 1 3)(* (+ 3 2) 3)(sqrt 3)))))
+; Teilaufabe 6
+; ((1 + 2 + 3) * (2 - 3 - (2 / 3)))
 
+; Teilaufgabe 7
+; (a)
+; Einfach gesagt:
+; Bei der äusseren Reduktion wird von aussen nach innen ausgewertet,
+; Bei der inneren Reduktion von innen nach aussen.
+; (b)
+; Das macht bei Operationen wie Additionen etc. zwar keinen Unterschied,
+; Aber bei Operationen mit Bedienungen, wo eine Operation bei erfüllen
+; der Bedingung X nicht mehr ausgeführt werden soll einen gehörigen unterschied.
+; Denn bei der inneren Reduktion kann es deswegen zu Endlosschleifen kommen.
 
-
-
-
-
-
-
-
-
-  
+; Teilaufgabe 8
+; endrekusrion -> kein nachklappern
+(define (laengen1 xss)
+  (if (empty? xss)
+      '()
+      (cons (length (car xss)) (laengen1 (cdr xss)))))
+(define (laengen2 xss [out '()])
+  (if (empty? xss)
+      (reverse out)
+      (laengen2 (cdr xss) (cons (length (car xss)) out))))
+(define (test8)
+  (values
+   (laengen1 '((1 2 3 4) (Auto Bus) (()) ()))
+   (laengen2 '((1 2 3 4) (Auto Bus) (()) ()))
+   ))  
